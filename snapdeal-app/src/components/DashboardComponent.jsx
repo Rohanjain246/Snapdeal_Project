@@ -2,12 +2,15 @@ import Header from "./Dashboard/Header";
 import Footer from "./Dashboard/Footer";
 import MainContent from "./Dashboard/MainContent";
 import { Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function DashboardComponent() {
+  const location = useLocation();
+  console.log("location --->", location);
   return (
     <div>
       <Header />
-      <MainContent />
+      {!location.pathname.includes("product") && <MainContent />}
       <Outlet />
       <Footer />
     </div>

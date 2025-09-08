@@ -13,12 +13,14 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useNavigate } from "react-router-dom";
-import { fetchLogin } from "../Utills/commonUtills";
+import { fetchOtp } from "../Utills/commonUtills";
 
 export default function LoginDialog() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [open, setOpen] = useState();
+  const [error, setError] = useState("");
+
   const theme = useTheme();
   const onClose = () => {
     setOpen(false);
@@ -30,28 +32,18 @@ export default function LoginDialog() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!input) {
-      alert("Please enter a valid input");
+    if (!input || input.match(/[0-9]{10}/) === null) {
+      setError("Please enter a valid input");
       return;
     }
-
-    const token = await fetch("http://localhost:7000/api/token");
-    const data = await token.json();
-    localStorage.setItem("token", data.token);
-    const obj = {};
-    if (input.includes("@")) {
-      obj.email = input;
-    } else {
-      obj.number = input;
-    }
-    const resp = await fetchLogin(obj);
-    if (resp.status !== 200) {
-      alert("Login failed");
+    setError("");
+    const response = await fetchOtp({ phone: input });
+    localStorage.setItem("phone", input);
+    if (!response.success) {
+      setError("Login failed. Please try again.");
       return;
     }
-    alert("Login successful");
-    navigate("/");
-    setOpen(false);
+    navigate("/otp");
   };
 
   return (
@@ -208,6 +200,8 @@ export default function LoginDialog() {
               placeholder="Mobile Number/ Email"
               variant="outlined"
               size="large"
+              error={Boolean(error)}
+              helperText={error}
               sx={{
                 mb: 2,
                 bgcolor: "#f6f7fb",

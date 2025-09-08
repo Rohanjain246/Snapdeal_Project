@@ -19,6 +19,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Sidebar data
 const topCategories = [
@@ -74,6 +75,8 @@ const products = [
 
 export default function HomePageLayout() {
   const [index, setIndex] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handlePrev = () => {
     setIndex((prev) => (prev === 0 ? carouselImages.length - 1 : prev - 1));
@@ -222,10 +225,19 @@ export default function HomePageLayout() {
                     sx={{
                       height: "100%",
                       transition: "transform 0.2s",
-                      "&:hover": { transform: "scale(1.05)" },
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        cursor: "pointer",
+                      },
                     }}>
                     <CardMedia
                       component="img"
+                      onClick={() =>
+                        navigate(`/product/${item.id}`, {
+                          replace: true, // replaces current entry instead of pushing new one
+                          state: { ...location.state, id: item.id },
+                        })
+                      }
                       image={item.img}
                       alt={item.title}
                       sx={{

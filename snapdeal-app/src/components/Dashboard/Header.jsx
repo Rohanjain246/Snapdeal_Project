@@ -12,17 +12,35 @@ import {
   Grid,
   Paper,
   Divider,
+  Avatar,
+  Badge,
 } from "@mui/material";
+import { deepPurple } from "@mui/material/colors";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import MenuIcon from "@mui/icons-material/Menu";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { items = [] } = useSelector(({ cart }) => cart) || {};
+  console.log("items --->", items);
+
+  const isUserData =
+    JSON.stringify(localStorage.getItem("user")) !== "null" &&
+    JSON.stringify(localStorage.getItem("user")) !== "undefined";
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("phone");
+    localStorage.removeItem("token");
+    setOpen(false);
+    navigate("/");
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid
@@ -51,7 +69,9 @@ export default function Header() {
         position="sticky"
         sx={{ backgroundColor: "#e40046", boxShadow: "none", top: 0 }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+            onClick={() => navigate("/")}>
             <img
               src="https://i1.sdlcdn.com/img/snapdeal/darwin/logo/sdLatestLogo.svg"
               alt="Snapdeal"
@@ -105,12 +125,13 @@ export default function Header() {
                 gap: 1,
                 cursor: "pointer",
               }}>
-              <ShoppingCartIcon sx={{ color: "#f3eff0ff" }} />
+              <Badge badgeContent={items.length} color="primary">
+                <ShoppingCartIcon sx={{ color: "#f3eff0ff" }} />
+              </Badge>
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                 Cart
               </Typography>
             </Box>
-
             <Box sx={{ position: "relative" }}>
               <Box
                 sx={{
@@ -120,10 +141,18 @@ export default function Header() {
                   cursor: "pointer",
                 }}
                 onClick={() => setOpen((prev) => !prev)}>
-                <PersonIcon />
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  Sign In
-                </Typography>
+                {isUserData ? (
+                  <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                    {localStorage.getItem("user")?.slice(1, 2).toUpperCase()}
+                  </Avatar>
+                ) : (
+                  <>
+                    <PersonIcon />
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      Sign In
+                    </Typography>
+                  </>
+                )}
               </Box>
 
               {open && (
@@ -149,7 +178,16 @@ export default function Header() {
                       mb: 1,
                       cursor: "pointer",
                     }}>
-                    <AccountCircleOutlinedIcon fontSize="small" />
+                    {isUserData ? (
+                      <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                        {localStorage
+                          .getItem("user")
+                          ?.slice(1, 2)
+                          .toUpperCase()}
+                      </Avatar>
+                    ) : (
+                      <AccountCircleOutlinedIcon fontSize="small" />
+                    )}
                     <Typography variant="body2">Your Account</Typography>
                   </Box>
 
@@ -169,34 +207,50 @@ export default function Header() {
                     sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 2 }}
                   />
 
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", mb: 1, opacity: 0.8 }}>
-                    If you are a new user
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    onClick={() => navigate("/register")}
-                    sx={{
-                      mb: 2,
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      color: "#ff4081",
-                    }}>
-                    Register
-                  </Typography>
+                  {!isUserData ? (
+                    <>
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", mb: 1, opacity: 0.8 }}>
+                        If you are a new user
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        onClick={() => navigate("/register")}
+                        sx={{
+                          mb: 2,
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          color: "#ff4081",
+                        }}>
+                        Register
+                      </Typography>
 
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    onClick={() => navigate("/login")}
-                    sx={{
-                      bgcolor: "#ff0059",
-                      fontWeight: "bold",
-                      "&:hover": { bgcolor: "#e60050" },
-                    }}>
-                    LOGIN
-                  </Button>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        onClick={() => navigate("/login")}
+                        sx={{
+                          bgcolor: "#ff0059",
+                          fontWeight: "bold",
+                          "&:hover": { bgcolor: "#e60050" },
+                        }}>
+                        LOGIN
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={handleLogout}
+                      sx={{
+                        bgcolor: "#ff0059",
+                        fontWeight: "bold",
+                        "&:hover": { bgcolor: "#e60050" },
+                      }}>
+                      LOGOUT
+                    </Button>
+                  )}
                 </Paper>
               )}
             </Box>

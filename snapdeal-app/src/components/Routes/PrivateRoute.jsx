@@ -1,6 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import DashboardComponent from "../DashboardComponent";
 import LoginDialog from "../Login/Login";
+import OTPDialog from "../Otp/OtpValidation";
+import ProductPage from "../Product/ProductOverview";
 
 const route = createBrowserRouter([
   {
@@ -9,6 +11,11 @@ const route = createBrowserRouter([
     children: [
       { path: "login", element: <LoginDialog /> },
       { path: "register", element: <LoginDialog /> },
+      { path: "/otp", element: <OTPDialog /> },
+      {
+        path: "/product/:id",
+        element: <ProductPage />,
+      },
     ],
   },
   { path: "*", element: <div>404 Not Found</div> },
