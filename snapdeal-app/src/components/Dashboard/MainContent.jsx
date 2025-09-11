@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -70,7 +70,7 @@ const products = [
     img: "/s4.jpg",
     price: "₹150",
   },
-  { id: 6, title: "Aadi Black Casual Shoes", img: "/p1.jpg", price: "₹326" },
+  { id: 5, title: "Aadi Black Casual Shoes", img: "/p1.jpg", price: "₹326" },
 ];
 
 export default function HomePageLayout() {

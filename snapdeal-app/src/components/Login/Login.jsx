@@ -9,6 +9,7 @@ import {
   Button,
   Divider,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -20,6 +21,7 @@ export default function LoginDialog() {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState();
   const [error, setError] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const onClose = () => {
@@ -37,12 +39,15 @@ export default function LoginDialog() {
       return;
     }
     setError("");
+    setLoader(true);
     const response = await fetchOtp({ phone: input });
     localStorage.setItem("phone", input);
     if (!response.success) {
+      setLoader(false);
       setError("Login failed. Please try again.");
       return;
     }
+    setLoader(false);
     navigate("/otp");
   };
 
@@ -214,6 +219,7 @@ export default function LoginDialog() {
               color="primary"
               fullWidth
               onClick={handleSubmit}
+              disabled={loader}
               sx={{
                 mb: 2,
                 py: 1.4,
@@ -224,6 +230,12 @@ export default function LoginDialog() {
                 bgcolor: "#ff0059",
               }}>
               CONTINUE
+              {loader && (
+                <CircularProgress
+                  sx={{ position: "absolute", color: "#ff0059" }}
+                  size={30}
+                />
+              )}
             </Button>
             <Divider sx={{ width: "100%", my: 2 }}>or Login Using</Divider>
             <Button

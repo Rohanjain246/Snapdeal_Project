@@ -3,6 +3,7 @@ import DashboardComponent from "../DashboardComponent";
 import LoginDialog from "../Login/Login";
 import OTPDialog from "../Otp/OtpValidation";
 import ProductPage from "../Product/ProductOverview";
+import ShoppingCart from "../Product/AddToCartPage";
 
 const route = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const route = createBrowserRouter([
       {
         path: "/product/:id",
         element: <ProductPage />,
+      },
+      {
+        path: "cart",
+        element: <ShoppingCart />,
       },
     ],
   },

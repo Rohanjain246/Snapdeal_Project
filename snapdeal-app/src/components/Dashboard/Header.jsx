@@ -21,14 +21,15 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import MenuIcon from "@mui/icons-material/Menu";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { isBuyNowAction } from "../ReduxToolkit/CartSlice";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { items = [] } = useSelector(({ cart }) => cart) || {};
-  console.log("items --->", items);
 
   const isUserData =
     JSON.stringify(localStorage.getItem("user")) !== "null" &&
@@ -124,6 +125,10 @@ export default function Header() {
                 alignItems: "center",
                 gap: 1,
                 cursor: "pointer",
+              }}
+              onClick={() => {
+                dispatch(isBuyNowAction(false));
+                navigate("/cart");
               }}>
               <Badge badgeContent={items.length} color="primary">
                 <ShoppingCartIcon sx={{ color: "#f3eff0ff" }} />

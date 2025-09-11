@@ -37,3 +37,24 @@ export const verifyOtp = async (obj) => {
   });
   return res.json();
 };
+
+export const fetchProductDetails = async () => {
+  const resp = await fetch("http://localhost:7000/api/products", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (resp.status === 401) {
+    logout();
+  }
+  return resp.json();
+};
+
+export function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("phone");
+  window.location.href = "/login";
+}

@@ -4,6 +4,8 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [],
+    selectedItem: {},
+    isBuyNow: false,
   },
   reducers: {
     addToCart: (state, action) => {
@@ -15,8 +17,20 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
+    currentCartItem: (state, action) => {
+      state.selectedItem = action.payload;
+    },
+    isBuyNowAction: (state, action) => {
+      state.isBuyNow = action.payload;
+    },
   },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  clearCart,
+  currentCartItem,
+  isBuyNowAction,
+} = cartSlice.actions;
 export default cartSlice.reducer;
