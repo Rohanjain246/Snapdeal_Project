@@ -20,15 +20,22 @@ import { useNavigate } from "react-router-dom";
 const ProductPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const location = useLocation();
+  console.log("location --->", location);
   const [product, setProduct] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector(({ products }) => products) || [];
 
   const getProductDetails = async () => {
-    const data = await fetchProductDetails();
-    setProduct(data);
-    dispatch(storeProduct(data));
+    try {
+      const data = await fetchProductDetails();
+      if (data?.length) {
+        setProduct(data);
+        dispatch(storeProduct(data));
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
   if (!product.length) {
     <div className="nodata">No Data Found</div>;

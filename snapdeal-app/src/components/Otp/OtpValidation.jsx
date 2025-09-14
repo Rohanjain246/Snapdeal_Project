@@ -18,7 +18,7 @@ export default function OTPDialog() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
-  const ref = useRef("");
+
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -37,9 +37,6 @@ export default function OTPDialog() {
     if (element.nextSibling && element.value !== "") {
       element.nextSibling.focus();
     }
-    if (index < otp.length - 1) {
-      ref.current[index + 1].focus();
-    }
   };
 
   const handleKeyDown = (e, index) => {
@@ -49,9 +46,6 @@ export default function OTPDialog() {
       e.target.previousSibling
     ) {
       e.target.previousSibling.focus();
-    }
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      ref.current[index - 1].focus();
     }
   };
 
@@ -102,7 +96,6 @@ export default function OTPDialog() {
           {otp.map((data, index) => (
             <Grid item key={index}>
               <TextField
-                inputRef={(el) => (ref.current[index] = el)}
                 inputProps={{
                   maxLength: 1,
                   style: { textAlign: "center", fontSize: "20px" },

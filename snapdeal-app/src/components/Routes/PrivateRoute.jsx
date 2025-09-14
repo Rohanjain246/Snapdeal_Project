@@ -4,6 +4,7 @@ import LoginDialog from "../Login/Login";
 import OTPDialog from "../Otp/OtpValidation";
 import ProductPage from "../Product/ProductOverview";
 import ShoppingCart from "../Product/AddToCartPage";
+import CheckoutDialog from "../PaymentMethods/PaymentMethod";
 
 const route = createBrowserRouter([
   {
@@ -14,12 +15,16 @@ const route = createBrowserRouter([
       { path: "register", element: <LoginDialog /> },
       { path: "/otp", element: <OTPDialog /> },
       {
-        path: "/product/:id",
+        path: "/product/:name/:id",
         element: <ProductPage />,
       },
       {
         path: "cart",
         element: <ShoppingCart />,
+      },
+      {
+        path: "payment",
+        element: <CheckoutDialog />,
       },
     ],
   },

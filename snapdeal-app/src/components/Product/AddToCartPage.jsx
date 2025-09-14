@@ -227,6 +227,7 @@ export default function ShoppingCartBottomSheet() {
                 <Typography>Delivery Charges: FREE</Typography>
               </Box>
               <Button
+                onClick={() => navigate("/payment")}
                 variant="contained"
                 sx={{ bgcolor: "deeppink", px: 3, py: 1 }}>
                 PROCEED TO PAY RS. {subtotal}

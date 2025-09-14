@@ -20,6 +20,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useNavigate, useLocation } from "react-router-dom";
+import _ from "lodash";
 
 // Sidebar data
 const topCategories = [
@@ -233,10 +234,13 @@ export default function HomePageLayout() {
                     <CardMedia
                       component="img"
                       onClick={() =>
-                        navigate(`/product/${item.id}`, {
-                          replace: true, // replaces current entry instead of pushing new one
-                          state: { ...location.state, id: item.id },
-                        })
+                        navigate(
+                          `/product/${_.camelCase(item.title)}/${item.id}`,
+                          {
+                            replace: true, // replaces current entry instead of pushing new one
+                            state: { ...location.state, id: item.id },
+                          }
+                        )
                       }
                       image={item.img}
                       alt={item.title}

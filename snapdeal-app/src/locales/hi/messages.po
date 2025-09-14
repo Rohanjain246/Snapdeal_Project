@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-09-14 22:22+0530\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: hi\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:271
+msgid " 10, near Aditya medical, nagaravarpalya, CV Raman Nagar,"
+msgstr " 10, आदित्य मेडिकल के पास, नगरवारपाल्या, सी.वी. रमन नगर,"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:285
+msgid " Add / Change"
+msgstr " जोड़ें / बदलें"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:278
+msgid " Bengaluru, Karnataka, India - 560038"
+msgstr " बेंगलुरु, कर्नाटक, भारत - 560038"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:411
+msgid " Continue"
+msgstr " जारी रखें"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:263
+msgid " Delivery Address"
+msgstr " डिलीवरी पता"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:376
+msgid " Free"
+msgstr " मुफ्त"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:423
+msgid " Pay Now"
+msgstr " अभी भुगतान करें"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:268
+msgid "+91 8277424985"
+msgstr "+91 8277424985"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:236
+msgid "Contact Details "
+msgstr "संपर्क विवरण"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:382
+msgid "Total Amount "
+msgstr "कुल राशि"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:115
+msgid "Card"
+msgstr "कार्ड"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:127
+msgid "Cash On Delivery"
+msgstr "डिलीवरी पर नकद"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:368
+msgid "Delivery Charges"
+msgstr "डिलीवरी शुल्क"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:362
+msgid "Price"
+msgstr "कीमत"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:109
+msgid "UPI"
+msgstr "यूपीआई"
+
+#: src/components/PaymentMethods/PaymentMethod.jsx:121
+msgid "Wallet"
+msgstr "वॉलेट"
