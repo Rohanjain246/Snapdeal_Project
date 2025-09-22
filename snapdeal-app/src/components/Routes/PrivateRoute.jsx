@@ -5,15 +5,28 @@ import OTPDialog from "../Otp/OtpValidation";
 import ProductPage from "../Product/ProductOverview";
 import ShoppingCart from "../Product/AddToCartPage";
 import CheckoutDialog from "../PaymentMethods/PaymentMethod";
+import ProductListingPage from "../Product/Selectedroduct";
+import SignUpForm from "../Login/SignUpForm";
+import MyOrdersPage from "../Orders/MyOrderDetails";
+import AdminPortal from "../Admin/AdminPortal";
+import SavedAddresses from "../Orders/AddressDetails/SaveAddressCard";
 
 const route = createBrowserRouter([
   {
     path: "/",
     element: <DashboardComponent />,
     children: [
+      {
+        path: "myOrder",
+        element: <MyOrdersPage />,
+      },
+      {
+        path: "myAddress",
+        element: <SavedAddresses />,
+      },
       { path: "login", element: <LoginDialog /> },
-      { path: "register", element: <LoginDialog /> },
-      { path: "/otp", element: <OTPDialog /> },
+      { path: "register", element: <SignUpForm /> },
+      { path: "otp", element: <OTPDialog /> },
       {
         path: "/product/:name/:id",
         element: <ProductPage />,
@@ -26,7 +39,15 @@ const route = createBrowserRouter([
         path: "payment",
         element: <CheckoutDialog />,
       },
+      {
+        path: "product",
+        element: <ProductListingPage />,
+      },
     ],
+  },
+  {
+    path: "admin",
+    element: <AdminPortal />,
   },
   { path: "*", element: <div>404 Not Found</div> },
 ]);

@@ -14,14 +14,21 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useNavigate } from "react-router-dom";
-import { fetchOtp } from "../Utills/commonUtills";
+import {
+  checkLogin,
+  fetchOtp,
+  verifyPassword,
+  getToken,
+} from "../Utills/commonUtills";
 
 export default function LoginDialog() {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
+  const [password, setPassword] = useState("");
   const [open, setOpen] = useState();
   const [error, setError] = useState("");
   const [loader, setLoader] = useState(false);
+  const [isEmail, setIsEmail] = useState(false);
 
   const theme = useTheme();
   const onClose = () => {
@@ -33,22 +40,72 @@ export default function LoginDialog() {
     setOpen(true);
   }, []);
 
+  // Regex for validation
+  const phoneRegex = /^[0-9]{10}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleSubmit = async () => {
-    if (!input || input.match(/[0-9]{10}/) === null) {
-      setError("Please enter a valid input");
+    if (!input) {
+      setError("Please enter Mobile Number or Email");
       return;
     }
-    setError("");
-    setLoader(true);
-    const response = await fetchOtp({ phone: input });
-    localStorage.setItem("phone", input);
-    if (!response.success) {
+
+    // Case: Phone number
+    if (phoneRegex.test(input)) {
+      const { isExistingUser } = await checkLogin({ number: input });
+      if (!isExistingUser) {
+        navigate("/register");
+        return;
+      }
+      setIsEmail(false);
+      setError("");
+      setLoader(true);
+      const response = await fetchOtp({ phone: input });
+      localStorage.setItem("phone", input);
+      if (!response.success) {
+        setLoader(false);
+        setError("Login failed. Please try again.");
+        return;
+      }
       setLoader(false);
-      setError("Login failed. Please try again.");
+      navigate("/otp");
       return;
     }
-    setLoader(false);
-    navigate("/otp");
+    if (emailRegex.test(input)) {
+      const { isExistingUser } = await checkLogin({ email: input });
+      if (!isExistingUser) {
+        navigate("/register");
+        return;
+      }
+
+      setIsEmail(true);
+      if (!password) {
+        setError("Please enter password for email login");
+        return;
+      }
+
+      // TODO: Replace with actual email login API call
+      const { user } = (await verifyPassword({ email: input, password })) || {};
+      if (user?.length) {
+        await getToken();
+        alert("login Successfully!!!");
+        localStorage.setItem("user", JSON.stringify(user[0].name));
+        localStorage.setItem("isAdmin", JSON.stringify(user[0].admin));
+        navigate("/");
+        return;
+      }
+
+      setError("");
+      setLoader(true);
+      setTimeout(() => {
+        setLoader(false);
+        navigate("/register");
+      }, 1500);
+      return;
+    }
+
+    // Invalid input
+    setError("Please enter a valid Mobile Number (10 digits) or Email");
   };
 
   return (
@@ -74,6 +131,7 @@ export default function LoginDialog() {
         }}>
         <CloseIcon />
       </IconButton>
+
       <DialogContent sx={{ p: 0 }}>
         <Box
           sx={{
@@ -174,6 +232,7 @@ export default function LoginDialog() {
               </Box>
             </Box>
           </Box>
+
           {/* Right form column */}
           <Box
             sx={{
@@ -195,16 +254,20 @@ export default function LoginDialog() {
               mb={3}
               align="center"
               fontSize="1rem">
-              Please provide your Mobile Number or Email to Login/Sign Up on
-              Snapdeal
+              Please provide your Mobile Number or Email to Login/Sign Up
             </Typography>
+
+            {/* Input field */}
             <TextField
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                setError("");
+                // setIsEmail(emailRegex.test(e.target.value));
+              }}
               fullWidth
-              placeholder="Mobile Number/ Email"
+              placeholder="Mobile Number / Email"
               variant="outlined"
-              size="large"
               error={Boolean(error)}
               helperText={error}
               sx={{
@@ -214,6 +277,26 @@ export default function LoginDialog() {
                 "& .MuiInputBase-input": { py: 1.3 },
               }}
             />
+
+            {/* Password field only for email */}
+            {isEmail && (
+              <TextField
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                fullWidth
+                placeholder="Password"
+                variant="outlined"
+                error={Boolean(error && !password)}
+                sx={{
+                  mb: 2,
+                  bgcolor: "#f6f7fb",
+                  borderRadius: 1.5,
+                  "& .MuiInputBase-input": { py: 1.3 },
+                }}
+              />
+            )}
+
             <Button
               variant="contained"
               color="primary"
@@ -232,17 +315,18 @@ export default function LoginDialog() {
               CONTINUE
               {loader && (
                 <CircularProgress
-                  sx={{ position: "absolute", color: "#ff0059" }}
+                  sx={{ position: "absolute", color: "#fff" }}
                   size={30}
                 />
               )}
             </Button>
+
             <Divider sx={{ width: "100%", my: 2 }}>or Login Using</Divider>
+
             <Button
               fullWidth
               variant="outlined"
               startIcon={<GoogleIcon />}
-              onClick={() => {}}
               sx={{
                 fontWeight: 700,
                 textTransform: "none",

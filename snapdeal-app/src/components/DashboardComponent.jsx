@@ -10,7 +10,9 @@ function DashboardComponent() {
   return (
     <div>
       <Header />
-      {!location.pathname.includes("product") && <MainContent />}
+      {!location.pathname.includes("product") &&
+        !location.pathname.includes("myAddress") &&
+        !location.pathname.includes("myOrder") && <MainContent />}
       <Outlet />
       <Footer />
     </div>

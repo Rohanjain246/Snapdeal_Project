@@ -14,6 +14,8 @@ import {
   Divider,
   Avatar,
   Badge,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,9 +26,16 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { isBuyNowAction } from "../ReduxToolkit/CartSlice";
+import { selectedCategory, subCategory } from "../ReduxToolkit/MenuItemSlice";
+import _ from "lodash";
+import AlertSnackbar from "../Alerts/AlertSnackBar";
+
+const suggestions = ["Shoes", "Campus ", "Clothing", "Shirt", "tShirt"];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [searchString, setSearchString] = useState("");
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items = [] } = useSelector(({ cart }) => cart) || {};
@@ -42,8 +51,29 @@ export default function Header() {
     setOpen(false);
     navigate("/");
   };
+
+  const handleSearch = async () => {
+    setError(false);
+    const resp = await fetch(
+      `http://localhost:7000/api/search?q=${searchString}`
+    );
+    const result = await resp.json();
+    if (result?.length) {
+      setSearchString("");
+      const category = result[0]?.category;
+      const subCategories = result[0]?.subCategory;
+      dispatch(selectedCategory(_.camelCase(category)));
+      dispatch(subCategory(subCategories));
+      navigate("/product");
+    } else {
+      setSearchString("");
+      setError(true);
+      navigate("/");
+    }
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {error && <AlertSnackbar />}
       <Grid
         container
         sx={{ backgroundColor: "#c6003d", color: "#fff", py: 0.5 }}>
@@ -92,19 +122,30 @@ export default function Header() {
               width: "50%",
               boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
               mx: 2,
+              pl: 1,
             }}>
-            <InputBase
-              placeholder="Search products & brands"
-              sx={{
-                flex: 1,
-                ml: 1,
-                fontSize: 14,
-              }}
+            <Autocomplete
+              freeSolo
+              options={suggestions}
+              inputValue={searchString}
+              onInputChange={(event, newValue) => setSearchString(newValue)}
+              sx={{ flex: 1 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Search products & brands"
+                  variant="standard"
+                  InputProps={{ ...params.InputProps, disableUnderline: true }}
+                  sx={{ fontSize: 14 }}
+                />
+              )}
             />
             <Button
               variant="contained"
               startIcon={<SearchIcon />}
+              onClick={handleSearch}
               sx={{
+                px: "6px",
                 borderRadius: 0,
                 backgroundColor: "#333",
                 color: "#fff",
@@ -147,9 +188,14 @@ export default function Header() {
                 }}
                 onClick={() => setOpen((prev) => !prev)}>
                 {isUserData ? (
-                  <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                    {localStorage.getItem("user")?.slice(1, 2).toUpperCase()}
-                  </Avatar>
+                  <>
+                    <Typography>
+                      {localStorage.getItem("user").slice(1, -1)}
+                    </Typography>
+                    <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                      {localStorage.getItem("user")?.slice(1, 2).toUpperCase()}
+                    </Avatar>
+                  </>
                 ) : (
                   <>
                     <PersonIcon />
@@ -197,6 +243,13 @@ export default function Header() {
                   </Box>
 
                   <Box
+                    onClick={() => {
+                      if (!JSON.parse(localStorage.getItem("user"))) {
+                        navigate("/login");
+                        return;
+                      }
+                      navigate("/myOrder");
+                    }}
                     sx={{
                       display: "flex",
                       alignItems: "center",
@@ -205,9 +258,23 @@ export default function Header() {
                       cursor: "pointer",
                     }}>
                     <Inventory2OutlinedIcon fontSize="small" />
-                    <Typography variant="body2">Your Orders</Typography>
+                    <Typography variant="body2">My Orders</Typography>
                   </Box>
 
+                  <Divider
+                    sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 2 }}
+                  />
+                  {JSON.parse(localStorage.getItem("isAdmin")) && (
+                    <Button
+                      onClick={() => navigate("/admin")}
+                      sx={{ color: "secondary", variant: "contained" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", mb: 1, opacity: 0.8 }}>
+                        Vender Dashboard
+                      </Typography>
+                    </Button>
+                  )}
                   <Divider
                     sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 2 }}
                   />

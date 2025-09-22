@@ -27,6 +27,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Trans } from "@lingui/react/macro";
 import { activate } from "../../i18n";
+import { fetchMyOrder } from "../Utills/commonUtills";
 
 export default function CheckoutDialog({ open = true }) {
   const { items, isBuyNow, selectedItem } = useSelector(({ cart }) => cart);
@@ -86,6 +87,16 @@ export default function CheckoutDialog({ open = true }) {
           const result = await verifyRes.json();
           if (result.success) {
             alert("✅ Payment Successful!");
+            const modifiedProduct = selectedroduct.map((item) => {
+              return {
+                ...item,
+                orderId,
+                createdDate: new Date().toISOString(),
+                status: "Pending",
+                quantity: "1",
+              };
+            });
+            await fetchMyOrder(modifiedProduct);
             navigate("/");
             dispatch(clearCart());
           } else {
